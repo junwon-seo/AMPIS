@@ -61,7 +61,7 @@ class RLEMasks(object):
             return RLEMasks([mask for mask, bool_ in zip(self.rle, item) if bool_])
 
         elif type(item) == np.ndarray:
-            if item.dtype == np.bool:
+            if item.dtype == bool:
                 assert item.shape[0] == len(self)
                 return RLEMasks([mask for mask, bool_ in zip(self.rle, item) if bool_])
             else:
@@ -275,7 +275,7 @@ class InstanceSet(object):
             masks = RLEMasks(segs)
 
         elif segtype == np.ndarray:
-            if segs[0].dtype == np.bool:
+            if segs[0].dtype == bool:
                 #  bitmask
                 masks = BitMasks(np.stack(segs))
 
@@ -460,7 +460,7 @@ class InstanceSet(object):
         r, c = self.instances.image_size
 
         # create mask of True pixels on border, False everywhere else
-        border = np.ones((r, c), dtype=np.bool)
+        border = np.ones((r, c), dtype=bool)
         border[k:-k, k:-k] = 0
         border = RLE.encode(np.asfortranarray(border))
         # boolean mask indicating which instances do not intersect the edge of the images
@@ -505,7 +505,7 @@ class InstanceSet(object):
             keys = ['area', 'equivalent_diameter', 'major_axis_length', 'perimeter', 'solidity', 'orientation']
         # TODO do this with multiprocessing or joblib.parallel to speed up
         rprops = [skimage.measure.regionprops_table(masks_to_bitmask_array(mask, self.instances.image_size).squeeze()
-                                                    .astype(np.int), properties=keys) for mask in self.instances.masks]
+                                                    .astype(int), properties=keys) for mask in self.instances.masks]
         df = pd.DataFrame(rprops)
         df['class_idx'] = self.instances.class_idx
         self.rprops = df
@@ -737,7 +737,7 @@ def masks_to_bitmask_array(masks, size=None):
 
     if dtype == np.ndarray:
         # masks are already array
-        assert masks.dtype == np.bool
+        assert masks.dtype == bool
         return masks
 
     elif dtype == PolygonMasks:
@@ -749,7 +749,7 @@ def masks_to_bitmask_array(masks, size=None):
     elif dtype == list:
         if type(masks[0]) == dict:
             # RLE masks
-            return RLE.decode(masks).astype(np.bool).transpose((2, 0, 1))
+            return RLE.decode(masks).astype(bool).transpose((2, 0, 1))
         elif type(masks[0]) == list or type(masks[0]) == np.ndarray:
             assert size is not None
             bitmasks = _poly2mask(masks, size)
@@ -758,7 +758,7 @@ def masks_to_bitmask_array(masks, size=None):
             raise NotImplementedError
 
     elif dtype == RLEMasks:
-        bitmask = RLE.decode(masks.rle).astype(np.bool)
+        bitmask = RLE.decode(masks.rle).astype(bool)
         if bitmask.ndim == 2:  # only 1 mask
             return bitmask[np.newaxis,:,:]
         else:  # multiple masks, reorder to (n_mask x r x c
