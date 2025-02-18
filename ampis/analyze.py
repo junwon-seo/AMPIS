@@ -314,11 +314,11 @@ def det_seg_scores(gt, pred, iou_thresh=0.5, size=None):
     predmasks_tp = [predmasks[i[1]] for i in matches_]
     seg_true_positive = np.array([rle.area(rle.merge([m1, m2], intersect=True))
                                   for m1, m2 in zip(gtmasks_tp, predmasks_tp)],
-                                 np.int)
+                                 int)
 
     # total number of pixels in each gt and pred mask
-    tp_gt_area = np.array([rle.area(m) for m in gtmasks_tp], np.int)
-    tp_pred_area = np.array([rle.area(m) for m in predmasks_tp], np.int)
+    tp_gt_area = np.array([rle.area(m) for m in gtmasks_tp], int)
+    tp_pred_area = np.array([rle.area(m) for m in predmasks_tp], int)
 
     seg_false_positive = tp_pred_area - seg_true_positive
     seg_false_negative = tp_gt_area - seg_true_positive
@@ -656,7 +656,7 @@ def seg_perf_iset(gt_masks, pred_masks, match_results=None, mode='reduced'):
     pixel_map = tp_reduced + fn_reduced + fp_reduced
 
     if mode == 'all':
-        masks = np.zeros((*pixel_map.shape[:2], 7), np.bool)
+        masks = np.zeros((*pixel_map.shape[:2], 7), bool)
         for i in range(1,8):
             masks[:,:,i-1] = pixel_map == i
 
@@ -675,7 +675,7 @@ def seg_perf_iset(gt_masks, pred_masks, match_results=None, mode='reduced'):
                   ['Other', 'TP', 'FN', 'TP+FN', 'FP', 'TP+FP', 'FN+FP', 'TP+FN+FP']]
 
     else:
-        masks = np.zeros((*pixel_map.shape[:2], 4), np.bool)
+        masks = np.zeros((*pixel_map.shape[:2], 4), bool)
         for i, idx in enumerate([1, 2, 4]):
             masks[:, :, i] = pixel_map == idx  # idx for tp, fn, fp
         # idx for pixels in multiple overlapping masks
