@@ -266,7 +266,7 @@ class InstanceSet(object):
         image_size = (ddict['height'], ddict['width'])
         # instances_gt = annotations_to_instances(ddict['annotations'], image_size, self.mask_format)
 
-        class_idx = np.asarray([anno['category_id'] for anno in ddict['annotations']], np.int)
+        class_idx = np.asarray([anno['category_id'] for anno in ddict['annotations']], dtype=int)
         bbox = np.stack([anno['bbox'] for anno in ddict['annotations']])
         segs = [anno['segmentation'] for anno in ddict['annotations']]
         segtype = type(segs[0])
@@ -405,11 +405,11 @@ class InstanceSet(object):
         areas = mask_areas(masks)
 
         if min_thresh is None:
-            inlier_min = np.ones(areas.shape, np.bool)
+            inlier_min = np.ones(areas.shape, dtype=bool)
         else:
             inlier_min = areas > min_thresh
         if max_thresh is None:
-            inlier_max = np.ones(areas.shape, np.bool)
+            inlier_max = np.ones(areas.shape, dtype=bool)
         else:
             inlier_max = areas < max_thresh
 
