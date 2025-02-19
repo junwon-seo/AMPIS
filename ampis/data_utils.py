@@ -224,7 +224,7 @@ def extract_boxes(masks, mask_mode='detectron2', box_mode='detectron2'):
 
     # matterport visualizer requires fixed
 
-    dtype = np.float if box_mode == 'detectron2' else np.int
+    dtype = float if box_mode == 'detectron2' else int
     boxes = np.zeros((masks.shape[0], 4), dtype=dtype)
     for i, m in enumerate(masks):
 
@@ -410,7 +410,7 @@ def get_ddicts(label_fmt, im_root, ann_root=None, pattern='*', dataset_class=Non
                      'dataset_class': dataset_class}
 
             if label_fmt == 'binary':  # generate label image from binary image
-                ann = skimage.measure.label(ann.astype(np.bool))
+                ann = skimage.measure.label(ann.astype(bool))
 
             unique = np.unique(ann)
             if unique[0] == 0:  # skip background pixels
