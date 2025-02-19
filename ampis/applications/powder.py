@@ -74,7 +74,7 @@ def _rle_satellite_match(particles, satellites, match_thresh=0.5):
     satellite_matches = []
     intersection_scores = []
 
-    particles_matched_bool = np.zeros(len(particles), dtype=np.bool)
+    particles_matched_bool = np.zeros(len(particles), dtype=bool)
     satellites_unmatched = []
 
     for satellite_idx, satellite_mask in enumerate(satellites):
@@ -93,9 +93,9 @@ def _rle_satellite_match(particles, satellites, match_thresh=0.5):
         else:
             satellites_unmatched.append(satellite_idx)
 
-    particles_unmatched = np.array([i for i, matched in enumerate(particles_matched_bool) if not matched], np.int)
-    satellite_matches = np.asarray(satellite_matches, np.int)
-    satellites_unmatched = np.asarray(satellites_unmatched, np.int)
+    particles_unmatched = np.array([i for i, matched in enumerate(particles_matched_bool) if not matched], int)
+    satellite_matches = np.asarray(satellite_matches, int)
+    satellites_unmatched = np.asarray(satellites_unmatched, int)
     intersection_scores = np.asarray(intersection_scores)
 
     match_pairs = {x: [] for x in np.unique(satellite_matches[:, 1])}
@@ -176,7 +176,7 @@ class PowderSatelliteImage(object):
         particle_box = self.particles.instances.boxes[[p_idx]]
         particle_box = boxes_to_array(particle_box)
 
-        particle_class_idx = np.zeros([1], np.int)
+        particle_class_idx = np.zeros([1], int)
 
         s_idx = self.matches['match_pairs'][p_idx]
         satellite_masks = self.satellites.instances[s_idx]
@@ -185,10 +185,10 @@ class PowderSatelliteImage(object):
         satellite_box = self.satellites.instances.boxes[s_idx]
         satellite_box = boxes_to_array(satellite_box)
 
-        satellite_class_idx = np.ones(len(satellite_box), np.int)
+        satellite_class_idx = np.ones(len(satellite_box), int)
 
         masks = particle_mask + satellite_masks
-        boxes = np.concatenate((particle_box, satellite_box), axis=0).astype(np.int)
+        boxes = np.concatenate((particle_box, satellite_box), axis=0).astype(int)
         labels = np.concatenate((particle_class_idx, satellite_class_idx), axis=0)
 
         label_map = {'thing_classes': ['particle', 'satellite']}
@@ -382,7 +382,7 @@ def psd(particles, xvals='d_eq', yvals='cvf', c=None, distance='length', ax=None
                         assert iset.HFW_units == particles[0].HFW_units, 'all HFW values should have same units'
                     length_units = particles[0].HFW_units
                     HFW = np.asarray([x.HFW for x in particles])
-                    image_widths = np.asarray([x.instances.image_size[1] for x in particles], np.int)
+                    image_widths = np.asarray([x.instances.image_size[1] for x in particles], int)
                     # c is the horizontal field width (length) / horizontal width (pixels)
                     c = [h/w for h, w in zip(HFW, image_widths)]
 
