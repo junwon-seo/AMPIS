@@ -549,9 +549,9 @@ def det_perf_iset(gt, pred, match_results=None, colormap=None, tp_gt=False):
         else pred.instances.boxes.tensor.numpy()
 
     if colormap is None:  # default values
-        colormap = {'TP': np.asarray([0.5,0.,1.],np.float),
-                    'FP': np.asarray([0.,1.,1.],np.float),
-                    'FN': np.asarray([1.,0.,0.], np.float)}
+        colormap = {'TP': np.asarray([0.5,0.,1.],float),
+                    'FP': np.asarray([0.,1.,1.],float),
+                    'FN': np.asarray([1.,0.,0.], float)}
     
     if tp_gt:
         tp_idx = match_results['tp'][:, 0]
